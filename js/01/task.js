@@ -2,9 +2,8 @@
 const rawData = require('fs').readFileSync('input', 'UTF-8').split('\n');
 rawData.pop();
 
-
 const data = rawData.map((x) => Number(x));
-console.debug(data[data.length - 1]);
+
 console.time("Part 1");
 (() => {
     let c = 0;

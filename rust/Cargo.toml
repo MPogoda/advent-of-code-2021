@@ -1,0 +1,11 @@
+[package]
+name = "rust-advent-of-code-2021"
+version = "0.1.0"
+authors = ["Mykhailo Pohoda <mi.pogoda@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+aoc-next = "^0.1"
+regex = "1"
+lazy_static = "1"
+anyhow = "1"
