@@ -1,11 +1,13 @@
-// const rawData = require('fs').readFileSync('testinput', 'UTF-8').split('\n');
-const rawData = require("fs").readFileSync("input", "UTF-8").split("\n");
+console.time("parser");
+const filename = "input";
+const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
 rawData.pop();
 
 const data = rawData.map((line) => {
   const [dir, v] = line.split(" ");
   return { dir, v: Number(v) };
 });
+console.timeEnd("parser");
 
 console.time("Part 1");
 (() => {

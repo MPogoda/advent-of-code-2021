@@ -1,8 +1,10 @@
-// const rawData = require("fs").readFileSync("testinput", "UTF-8").split("\n");
-const rawData = require("fs").readFileSync("input", "UTF-8").split("\n");
+console.time("parser");
+const filename = "input";
+// const filename = "testinput";
+const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
 rawData.pop();
 
-const numbers = rawData.shift().split(",").map(Number);
+const numbers = rawData.shift().split(",");
 
 rawData.shift();
 
@@ -15,12 +17,12 @@ while (rawData.length) {
         .shift()
         .split(" ")
         .filter((x) => x.length)
-        .map(Number)
     );
   }
   fields.push(field);
   rawData.shift();
 }
+console.timeEnd("parser");
 
 function play(field, n) {
   for (const row of field) {
@@ -41,9 +43,9 @@ function play(field, n) {
 function score(field, n) {
   const sum = field
     .flatMap((r) => r.filter((x) => x !== "X"))
-    .reduce((acc, v) => acc + v, 0);
+    .reduce((acc, v) => acc + Number(v), 0);
 
-  return { sum, n, ans: sum * n };
+  return { sum, n: Number(n), ans: sum * Number(n) };
 }
 
 console.time("Part 1");
