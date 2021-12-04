@@ -1,7 +1,7 @@
 use anyhow::Result;
 use aoc_next::{aoc_main, parser, solution, solver, Aoc};
 
-use rust_advent_of_code_2021::{day01, day02, day03};
+use rust_advent_of_code_2021::{day01, day02, day03, day04};
 
 const AOC: Aoc = Aoc {
     allow_download: true,
@@ -13,6 +13,8 @@ const AOC: Aoc = Aoc {
         solution! { 2, parser!{ day02::input_generator }, solver!{ day02::part2 }},
         solution! { 3, parser!{ day03::input_generator }, solver!{ day03::part1 }},
         solution! { 3, parser!{ day03::input_generator }, solver!{ day03::part2 }},
+        solution! { 4, parser!{ day04::input_generator }, solver!{ day04::part1 }},
+        solution! { 4, parser!{ day04::input_generator }, solver!{ day04::part2 }},
     ],
 };
 
