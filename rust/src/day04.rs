@@ -8,18 +8,30 @@ pub struct Field {
 }
 
 impl Field {
-    fn play(self: &mut Self, n: u8) -> bool {
-        for i in 0..self.field.len() {
-            for j in 0..self.field[i].len() {
-                if self.field[i][j] == Some(n) {
-                    self.field[i][j] = None;
+    fn parse<'a, T: Iterator<Item = &'a str>>(id: usize, lines: T) -> Self {
+        Self {
+            id,
+            field: lines
+                .map(|line| {
+                    line.split(' ')
+                        .filter(|n| !n.is_empty())
+                        .map(|n| n.parse().ok())
+                        .collect()
+                })
+                .collect(),
+        }
+    }
 
-                    if self.field[i].iter().all(|x| x.is_none()) {
-                        return true;
-                    }
-                    if self.field.iter().all(|row| row[j].is_none()) {
-                        return true;
-                    }
+    fn play(self: &mut Self, n: u8) -> bool {
+        for (i, j) in iproduct!(0..self.field.len(), 0..self.field[0].len()) {
+            if self.field[i][j] == Some(n) {
+                self.field[i][j] = None;
+
+                if self.field[i].iter().all(|x| x.is_none()) {
+                    return true;
+                }
+                if self.field.iter().all(|row| row[j].is_none()) {
+                    return true;
                 }
             }
         }
@@ -53,20 +65,10 @@ pub fn input_generator(input: &str) -> Input {
 
     let mut fields = Vec::new();
     while lines.clone().next().is_some() {
-        let field = lines
-            .by_ref()
-            .take_while(|l| !l.is_empty())
-            .map(|l| {
-                l.split(' ')
-                    .filter(|n| !n.is_empty())
-                    .map(|n| n.parse().ok())
-                    .collect()
-            })
-            .collect();
-        fields.push(Field {
-            field,
-            id: fields.len(),
-        });
+        fields.push(Field::parse(
+            fields.len(),
+            lines.by_ref().take_while(|l| !l.is_empty()),
+        ));
     }
 
     (numbers, fields)
@@ -80,7 +82,7 @@ pub fn part1((numbers, mut fields): Input) -> usize {
             }
         }
     }
-    0
+    panic!("Oh no");
 }
 
 pub fn part2((numbers, mut fields): Input) -> usize {
@@ -99,5 +101,5 @@ pub fn part2((numbers, mut fields): Input) -> usize {
             }
         }
     }
-    0
+    panic!("Oh no");
 }
