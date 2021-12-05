@@ -1,15 +1,15 @@
-use std::collections::HashMap;
-
 use regex::Regex;
 
 type Input = Vec<Line>;
 
 pub struct Line {
-    x1: u16,
-    x2: u16,
-    y1: u16,
-    y2: u16,
+    x1: usize,
+    x2: usize,
+    y1: usize,
+    y2: usize,
 }
+
+const SIZE: usize = 1000;
 
 impl Line {
     fn parse(line: &str) -> Self {
@@ -25,7 +25,8 @@ impl Line {
 
 lazy_static! {
     static ref RE: Regex =
-        Regex::new(r"^(?P<x1>\d+),(?P<y1>\d+) -> (?P<x2>\d+),(?P<y2>\d+)$").unwrap();
+        Regex::new(r"^(?P<x1>\d{1, 3}),(?P<y1>\d{1, 3}) -> (?P<x2>\d{1, 3}),(?P<y2>\d{1, 3})$")
+            .unwrap();
 }
 
 pub fn input_generator(input: &str) -> Input {
@@ -33,73 +34,67 @@ pub fn input_generator(input: &str) -> Input {
 }
 
 pub fn part1(lines: Input) -> usize {
-    let mut field = HashMap::new();
+    let mut field = [[0; SIZE]; SIZE];
     for line in lines {
         if line.x1 == line.x2 {
             let y_min = line.y1.min(line.y2);
             let y_max = line.y1.max(line.y2);
             for y in y_min..=y_max {
-                field.insert((line.x1, y), field.get(&(line.x1, y)).unwrap_or(&0) + 1);
+                field[y][line.x1] += 1;
             }
-        }
-        if line.y1 == line.y2 {
+        } else if line.y1 == line.y2 {
             let x_min = line.x1.min(line.x2);
             let x_max = line.x1.max(line.x2);
             for x in x_min..=x_max {
-                field.insert((x, line.y1), field.get(&(x, line.y1)).unwrap_or(&0) + 1);
+                field[line.y1][x] += 1;
             }
         }
     }
 
-    field.values().filter(|&v| v > &1).count()
+    field.iter().flatten().filter(|&&v| v > 1).count()
 }
 
 pub fn part2(lines: Input) -> usize {
-    let mut field = HashMap::new();
+    let mut field = [[0; SIZE]; SIZE];
     for line in lines {
         if line.x1 == line.x2 {
             let y_min = line.y1.min(line.y2);
             let y_max = line.y1.max(line.y2);
             for y in y_min..=y_max {
-                field.insert((line.x1, y), field.get(&(line.x1, y)).unwrap_or(&0) + 1);
+                field[y][line.x1] += 1;
             }
-        }
-        if line.y1 == line.y2 {
+        } else if line.y1 == line.y2 {
             let x_min = line.x1.min(line.x2);
             let x_max = line.x1.max(line.x2);
             for x in x_min..=x_max {
-                field.insert((x, line.y1), field.get(&(x, line.y1)).unwrap_or(&0) + 1);
+                field[line.y1][x] += 1;
             }
-        }
-        if line.x1 < line.x2 && line.y1 < line.y2 && line.y2 - line.y1 == line.x2 - line.x1 {
+        } else if line.x1 < line.x2 && line.y1 < line.y2 && line.y2 - line.y1 == line.x2 - line.x1 {
             for i in 0..=(line.x2 - line.x1) {
                 let x = line.x1 + i;
                 let y = line.y1 + i;
-                field.insert((x, y), field.get(&(x, y)).unwrap_or(&0) + 1);
+                field[y][x] += 1;
             }
-        }
-        if line.x1 > line.x2 && line.y1 < line.y2 && line.y2 - line.y1 == line.x1 - line.x2 {
+        } else if line.x1 > line.x2 && line.y1 < line.y2 && line.y2 - line.y1 == line.x1 - line.x2 {
             for i in 0..=(line.x1 - line.x2) {
                 let x = line.x1 - i;
                 let y = line.y1 + i;
-                field.insert((x, y), field.get(&(x, y)).unwrap_or(&0) + 1);
+                field[y][x] += 1;
             }
-        }
-        if line.x1 > line.x2 && line.y1 > line.y2 && line.y1 - line.y2 == line.x1 - line.x2 {
+        } else if line.x1 > line.x2 && line.y1 > line.y2 && line.y1 - line.y2 == line.x1 - line.x2 {
             for i in 0..=(line.x1 - line.x2) {
                 let x = line.x1 - i;
                 let y = line.y1 - i;
-                field.insert((x, y), field.get(&(x, y)).unwrap_or(&0) + 1);
+                field[y][x] += 1;
             }
-        }
-        if line.x1 < line.x2 && line.y1 > line.y2 && line.y1 - line.y2 == line.x2 - line.x1 {
+        } else if line.x1 < line.x2 && line.y1 > line.y2 && line.y1 - line.y2 == line.x2 - line.x1 {
             for i in 0..=(line.x2 - line.x1) {
                 let x = line.x1 + i;
                 let y = line.y1 - i;
-                field.insert((x, y), field.get(&(x, y)).unwrap_or(&0) + 1);
+                field[y][x] += 1;
             }
         }
     }
 
-    field.values().filter(|&v| v > &1).count()
+    field.iter().flatten().filter(|&&v| v > 1).count()
 }
