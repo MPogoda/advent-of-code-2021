@@ -44,9 +44,9 @@ console.timeEnd("Part 1");
 console.time("Part 2");
 (() => {
   const knownPaths = new Set();
-  const queue = [{ path: [], node: "start", visitedTwice: false }];
-  while (queue.length) {
-    const { node, path, visitedTwice } = queue.shift();
+  const stack = [{ path: [], node: "start", visitedTwice: false }];
+  while (stack.length) {
+    const { node, path, visitedTwice } = stack.pop();
     const currentPath = [...path, node];
     if (node === "end") {
       knownPaths.add(currentPath.join("+"));
@@ -60,7 +60,7 @@ console.time("Part 2");
         continue;
       }
 
-      queue.push({
+      stack.push({
         path: currentPath,
         node: connection,
         visitedTwice: visited || visitedTwice,
