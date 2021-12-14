@@ -37,13 +37,13 @@ function evolve(template) {
 
 function computeAnswer(template) {
   const frequencies = new Map();
+  frequencies.set(rawTemplate.slice(-1)[0], 1);
   for (const [k, v] of template.entries()) {
     frequencies.set(k[0], (frequencies.get(k[0]) ?? 0) + v);
-    frequencies.set(k[1], (frequencies.get(k[1]) ?? 0) + v);
   }
   let [min, max] = [Infinity, 0];
   for (const k of frequencies.keys()) {
-    const v = Math.ceil(frequencies.get(k) / 2);
+    const v = frequencies.get(k);
     if (v > max) {
       max = v;
     }
