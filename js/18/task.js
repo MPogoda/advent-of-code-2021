@@ -5,12 +5,14 @@ const filename = "input";
 const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
 rawData.pop();
 
-function isLeaf(node) {
-  return typeof node === "number";
-}
-
 function parseNode(line) {
   return JSON.parse(line);
+}
+const data = rawData.map(parseNode);
+console.timeEnd("parser");
+
+function isLeaf(node) {
+  return typeof node === "number";
 }
 
 function addLeft(node, v) {
@@ -100,25 +102,20 @@ function magnitude(node) {
   return 3 * magnitude(node_lhs) + 2 * magnitude(node_rhs);
 }
 
-console.timeEnd("parser");
-
 console.time("Part 1");
 (() => {
-  const ans = rawData
-    .slice(1)
-    .reduce((lhs, v) => reduce([lhs, parseNode(v)]), parseNode(rawData[0]));
+  const ans = data.slice(1).reduce((lhs, rhs) => reduce([lhs, rhs]), data[0]);
   console.log(magnitude(ans));
 })();
 console.timeEnd("Part 1");
 
 console.time("Part 2");
 (() => {
-  const snails = rawData.map(parseNode);
   let max = 0;
-  for (let i = 0; i < snails.length; ++i) {
-    for (let j = 0; j < snails.length; ++j) {
+  for (let i = 0; i < data.length; ++i) {
+    for (let j = 0; j < data.length; ++j) {
       if (i === j) continue;
-      max = Math.max(max, magnitude(reduce([snails[i], snails[j]])));
+      max = Math.max(max, magnitude(reduce([data[i], data[j]])));
     }
   }
   console.log(max);
