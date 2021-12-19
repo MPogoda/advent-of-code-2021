@@ -1,25 +1,15 @@
-use std::str::FromStr;
+use std::rc::Rc;
 
-#[derive(Clone, Debug)]
 pub enum Node {
     Value(u8),
-    Pair(Box<Node>, Box<Node>),
-}
-
-impl FromStr for Node {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self::parse(&mut s.as_bytes().into_iter()))
-    }
+    Pair(Rc<Node>, Rc<Node>),
 }
 
 impl Node {
-    fn pair(lhs: Self, rhs: Self) -> Self {
-        Self::Pair(Box::new(lhs), Box::new(rhs))
+    fn pair(lhs: Rc<Node>, rhs: Rc<Node>) -> Rc<Node> {
+        Rc::new(Node::Pair(lhs, rhs))
     }
-
-    fn parse<'a, T>(str: &mut T) -> Self
+    fn parse<'a, T>(str: &mut T) -> Rc<Self>
     where
         T: Iterator<Item = &'a u8> + Clone,
     {
@@ -32,21 +22,21 @@ impl Node {
                 str.next(); // ']'
                 Self::pair(lhs, rhs)
             }
-            _ => Self::Value(ch - b'0'),
+            _ => Rc::new(Self::Value(ch - b'0')),
         }
     }
 
-    fn add_left(&self, v: u8) -> Self {
+    fn add_left(&self, v: u8) -> Rc<Self> {
         match self {
-            Node::Value(value) => Node::Value(value + v),
-            Node::Pair(lhs, rhs) => Node::pair(lhs.add_left(v), *rhs.clone()),
+            Node::Value(value) => Rc::new(Node::Value(value + v)),
+            Node::Pair(lhs, rhs) => Node::pair(lhs.add_left(v), rhs.clone()),
         }
     }
 
-    fn add_right(&self, v: u8) -> Self {
+    fn add_right(&self, v: u8) -> Rc<Self> {
         match self {
-            Node::Value(value) => Node::Value(value + v),
-            Node::Pair(lhs, rhs) => Node::pair(*lhs.clone(), rhs.add_right(v)),
+            Node::Value(value) => Rc::new(Node::Value(value + v)),
+            Node::Pair(lhs, rhs) => Node::pair(lhs.clone(), rhs.add_right(v)),
         }
     }
 
@@ -66,10 +56,10 @@ impl Node {
         }
     }
 
-    fn try_explode_pair(depth: usize, lhs: &Self, rhs: &Self) -> Option<(Self, u8, u8)> {
+    fn try_explode_pair(depth: usize, lhs: &Self, rhs: &Self) -> Option<(Rc<Self>, u8, u8)> {
         if lhs.is_value() && rhs.is_value() {
             if depth >= 4 {
-                return Some((Node::Value(0), lhs.value(), rhs.value()));
+                return Some((Rc::new(Node::Value(0)), lhs.value(), rhs.value()));
             } else {
                 return None;
             }
@@ -84,30 +74,30 @@ impl Node {
         }
     }
 
-    fn try_explode(&self, depth: usize) -> Option<(Self, u8, u8)> {
+    fn try_explode(&self, depth: usize) -> Option<(Rc<Self>, u8, u8)> {
         match self {
             Node::Value(_) => None,
-            Node::Pair(lhs, rhs) => Self::try_explode_pair(depth, &*lhs, &*rhs),
+            Node::Pair(lhs, rhs) => Self::try_explode_pair(depth, lhs, rhs),
         }
     }
 
-    fn try_split(&self) -> Option<Self> {
+    fn try_split(&self) -> Option<Rc<Self>> {
         match self {
             Node::Value(value) => {
                 if *value < 10 {
                     None
                 } else {
                     Some(Node::pair(
-                        Node::Value(value / 2),
-                        Node::Value((value + 1) / 2),
+                        Rc::new(Node::Value(value / 2)),
+                        Rc::new(Node::Value((value + 1) / 2)),
                     ))
                 }
             }
             Node::Pair(lhs, rhs) => {
                 if let Some(new) = lhs.try_split() {
-                    Some(Node::pair(new, *rhs.clone()))
+                    Some(Node::pair(new, rhs.clone()))
                 } else if let Some(new) = rhs.try_split() {
-                    Some(Node::pair(*lhs.clone(), new))
+                    Some(Node::pair(lhs.clone(), new))
                 } else {
                     None
                 }
@@ -115,34 +105,43 @@ impl Node {
         }
     }
 
-    fn reduce(self) -> Self {
-        if let Some((exploded, _, _)) = self.try_explode(0) {
-            exploded.reduce()
-        } else if let Some(splitted) = self.try_split() {
-            splitted.reduce()
-        } else {
-            self
+    fn reduce(s: Rc<Self>) -> Rc<Self> {
+        let mut result = s;
+        loop {
+            if let Some((exploded, _, _)) = result.try_explode(0) {
+                result = exploded;
+                continue;
+            } else if let Some(splitted) = result.try_split() {
+                result = splitted;
+                continue;
+            } else {
+                break;
+            }
         }
+
+        result
     }
 
-    fn magnitude(self) -> usize {
+    fn magnitude(&self) -> usize {
         match self {
-            Node::Value(v) => v as usize,
+            Node::Value(v) => *v as usize,
             Node::Pair(lhs, rhs) => 3 * lhs.magnitude() + 2 * rhs.magnitude(),
         }
     }
 }
 
-type Input = Vec<Node>;
+type Input = Vec<Rc<Node>>;
 
 pub fn input_generator(s: &str) -> Input {
-    s.lines().map(|line| line.parse().unwrap()).collect()
+    s.lines()
+        .map(|line| Node::parse(&mut line.as_bytes().into_iter()))
+        .collect()
 }
 
 pub fn part1(input: Input) -> usize {
     input
         .into_iter()
-        .reduce(|lhs, rhs| Node::pair(lhs, rhs).reduce())
+        .reduce(|lhs, rhs| Node::reduce(Node::pair(lhs, rhs)))
         .unwrap()
         .magnitude()
 }
@@ -150,11 +149,7 @@ pub fn part1(input: Input) -> usize {
 pub fn part2(input: Input) -> usize {
     iproduct!(0..input.len(), 0..input.len())
         .filter(|(i, j)| i != j)
-        .map(|(i, j)| {
-            Node::pair(input[i].clone(), input[j].clone())
-                .reduce()
-                .magnitude()
-        })
+        .map(|(i, j)| Node::reduce(Node::pair(input[i].clone(), input[j].clone())).magnitude())
         .max()
         .unwrap()
 }
