@@ -2,9 +2,11 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
-const data = rawData.map((line) => line.split("").map(Number));
+const data = rawData.map(line => line.split("").map(Number));
 console.timeEnd("parser");
 
 function getNeighbours(x, y) {
@@ -16,7 +18,7 @@ function getNeighbours(x, y) {
     [x, y + 1],
     [x + 1, y - 1],
     [x + 1, y],
-    [x + 1, y + 1],
+    [x + 1, y + 1]
   ];
 }
 function evolve(ds) {
@@ -51,7 +53,7 @@ function evolve(ds) {
 console.time("Part 1");
 (() => {
   let result = 0;
-  const ds = data.map((d) => Array.from(d));
+  const ds = data.map(d => Array.from(d));
   for (let i = 0; i < 100; ++i) {
     result += evolve(ds);
   }
@@ -61,15 +63,12 @@ console.timeEnd("Part 1");
 
 console.time("Part 2");
 (() => {
-  const ds = data.map((d) => Array.from(d));
+  const ds = data.map(d => Array.from(d));
   const desiredAns = ds.length * ds[0].length;
-  let i = 0;
-  while (true) {
+  let i = 1;
+  while (evolve(ds) !== desiredAns) {
     ++i;
-    if (evolve(ds) === desiredAns) {
-      console.log(i);
-      return;
-    }
   }
+  console.log(i);
 })();
 console.timeEnd("Part 2");

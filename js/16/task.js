@@ -2,14 +2,19 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const [rawData] = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const [rawData] = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 // const rawData = "8A004A801A8002F478";
 // const rawData = "620080001611562C8802118E34";
 // const rawData = "C0015000016115A2E0802F182340";
 // const rawData = "C200B40A82";
-const s = rawData
-  .split("")
-  .flatMap((ch) => parseInt(ch, 16).toString(2).padStart(4, "0").split(""));
+const s = rawData.split("").flatMap(ch =>
+  parseInt(ch, 16)
+    .toString(2)
+    .padStart(4, "0")
+    .split("")
+);
 
 function parseSubPacketsByLength(pos) {
   const packets = [];

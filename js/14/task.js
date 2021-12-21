@@ -5,7 +5,7 @@ const filename = "input";
 const [rawTemplate, rawRules] = require("fs")
   .readFileSync(filename, "UTF-8")
   .split("\n\n");
-const rules = rawRules.split("\n").map((v) => v.split(" -> "));
+const rules = rawRules.split("\n").map(v => v.split(" -> "));
 rules.pop();
 
 const rulesMap = new Map(rules);
@@ -58,7 +58,7 @@ console.time("Part 1");
 (() => {
   const template = Array(10)
     .fill(0)
-    .reduce((acc) => evolve(acc), inputTemplate);
+    .reduce(acc => evolve(acc), inputTemplate);
   console.log(computeAnswer(template));
 })();
 console.timeEnd("Part 1");
@@ -67,7 +67,7 @@ console.time("Part 2");
 (() => {
   const template = Array(40)
     .fill(0)
-    .reduce((acc) => evolve(acc), inputTemplate);
+    .reduce(acc => evolve(acc), inputTemplate);
   console.log(computeAnswer(template));
 })();
 console.timeEnd("Part 2");

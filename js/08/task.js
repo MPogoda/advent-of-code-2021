@@ -2,13 +2,23 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
-const data = rawData.map((line) => {
+const data = rawData.map(line => {
   const [patterns, outputs] = line.split(" | ");
   return {
-    patterns: patterns.split(" ").map((p) => Array.from(p).sort().join("")),
-    outputs: outputs.split(" ").map((p) => Array.from(p).sort().join("")),
+    patterns: patterns.split(" ").map(p =>
+      Array.from(p)
+        .sort()
+        .join("")
+    ),
+    outputs: outputs.split(" ").map(p =>
+      Array.from(p)
+        .sort()
+        .join("")
+    )
   };
 });
 console.timeEnd("parser");
@@ -53,9 +63,7 @@ function solve({ patterns, outputs }) {
 
   // top edge
   const [T] = (() => {
-    return Array.from(digitToPattern[7]).filter(
-      (x) => !digitToPattern[1].has(x)
-    );
+    return Array.from(digitToPattern[7]).filter(x => !digitToPattern[1].has(x));
   })();
 
   // left bottom
@@ -79,7 +87,7 @@ function solve({ patterns, outputs }) {
         digitToPattern[9] = new Set(pattern);
         patternToDigit.set(pattern, 9);
         return Array.from(digitToPattern[8]).filter(
-          (x) => !digitToPattern[9].has(x)
+          x => !digitToPattern[9].has(x)
         );
       }
     }
@@ -90,7 +98,7 @@ function solve({ patterns, outputs }) {
     const digit1 = Array.from(digitToPattern[1]);
     for (const [rt, rb] of [digit1, [digit1[1], digit1[0]]]) {
       const maybe6 = Array.from(digitToPattern[8])
-        .filter((x) => x !== rt)
+        .filter(x => x !== rt)
         .join("");
       for (const pattern of patterns) {
         if (patternToDigit.has(pattern)) {
@@ -107,7 +115,7 @@ function solve({ patterns, outputs }) {
 
   (() => {
     const pattern = Array.from(digitToPattern[6])
-      .filter((x) => x !== LB)
+      .filter(x => x !== LB)
       .join("");
     digitToPattern[5] = new Set(pattern);
     patternToDigit.set(pattern, 5);
@@ -139,7 +147,7 @@ function solve({ patterns, outputs }) {
 
   (() => {
     const pattern = Array.from(digitToPattern[8])
-      .filter((x) => x !== LB && x !== LT)
+      .filter(x => x !== LB && x !== LT)
       .join("");
     digitToPattern[3] = new Set(pattern);
     patternToDigit.set(pattern, 3);
@@ -156,7 +164,7 @@ function solve({ patterns, outputs }) {
     }
   })();
 
-  return parseInt(outputs.map((output) => patternToDigit.get(output)).join(""));
+  return parseInt(outputs.map(output => patternToDigit.get(output)).join(""));
 }
 console.time("Part 2");
 (() => {

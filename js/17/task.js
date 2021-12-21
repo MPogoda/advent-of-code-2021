@@ -2,7 +2,9 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const [rawData] = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const [rawData] = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 const [x1, x2, y1, y2] = /^target area: x=(.+)\.\.(.+), y=(.+)\.\.(.+)$/
   .exec(rawData)
   .slice(1)

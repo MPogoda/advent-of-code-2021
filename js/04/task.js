@@ -1,7 +1,9 @@
 console.time("parser");
 const filename = "input";
 // const filename = "testinput";
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 
 const numbers = rawData.shift().split(",");
@@ -16,7 +18,7 @@ while (rawData.length) {
       rawData
         .shift()
         .split(" ")
-        .filter((x) => x.length)
+        .filter(x => x.length)
     );
   }
   fields.push(field);
@@ -30,7 +32,7 @@ function play(field, n) {
       if (row[i] === n) {
         row[i] = "X";
 
-        if (row.every((x) => x === "X") || field.every((r) => r[i] === "X")) {
+        if (row.every(x => x === "X") || field.every(r => r[i] === "X")) {
           return true;
         }
       }
@@ -42,7 +44,7 @@ function play(field, n) {
 
 function score(field, n) {
   const sum = field
-    .flatMap((r) => r.filter((x) => x !== "X"))
+    .flatMap(r => r.filter(x => x !== "X"))
     .reduce((acc, v) => acc + Number(v), 0);
 
   return { sum, n: Number(n), ans: sum * Number(n) };
@@ -50,7 +52,7 @@ function score(field, n) {
 
 console.time("Part 1");
 (() => {
-  const localFields = fields.map((f) => f.map((row) => Array.from(row)));
+  const localFields = fields.map(f => f.map(row => Array.from(row)));
   for (const n of numbers) {
     for (const field of localFields) {
       if (play(field, n)) {
@@ -64,7 +66,7 @@ console.timeEnd("Part 1");
 
 console.time("Part 2");
 (() => {
-  const localFields = fields.map((f) => f.map((row) => Array.from(row)));
+  const localFields = fields.map(f => f.map(row => Array.from(row)));
   const completed = new Set();
 
   for (const n of numbers) {

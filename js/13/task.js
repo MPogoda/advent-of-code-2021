@@ -10,8 +10,8 @@ const rows = rawRows.split("\n");
 const folds = rawFolds
   .split("\n")
   .slice(0, -1)
-  .map((fold) => {
-    [, dir, v] = /^fold along (.)=(\d+)$/.exec(fold);
+  .map(fold => {
+    const [, dir, v] = /^fold along (.)=(\d+)$/.exec(fold);
     return { dir, v: Number(v) };
   });
 
@@ -74,6 +74,6 @@ console.time("Part 2");
     const [x, y] = row.split(",").map(Number);
     field[y][x] = "#";
   }
-  console.log(field.map((row) => row.join("")).join("\n"));
+  console.log(field.map(row => row.join("")).join("\n"));
 })();
 console.timeEnd("Part 2");

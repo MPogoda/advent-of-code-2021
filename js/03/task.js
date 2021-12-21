@@ -1,7 +1,9 @@
 console.time("parser");
 const filename = "input";
 // const filename = "testinput";
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 
 console.timeEnd("parser");
@@ -30,7 +32,7 @@ console.time("Part 1");
     gammaStr,
     epsilon,
     epsilonStr,
-    answer: gamma * epsilon,
+    answer: gamma * epsilon
   });
 })();
 console.timeEnd("Part 1");
@@ -50,14 +52,14 @@ console.time("Part 2");
   for (let i = 0; i < oxygens[0].length; ++i) {
     if (oxygens.length === 1) break;
     const m = mostCommonBit(oxygens, i);
-    oxygens = oxygens.filter((s) => s[i] === (m ? "1" : "0"));
+    oxygens = oxygens.filter(s => s[i] === (m ? "1" : "0"));
   }
 
   let co2s = rawData;
   for (let i = 0; i < co2s[0].length; ++i) {
     if (co2s.length === 1) break;
     const m = mostCommonBit(co2s, i);
-    co2s = co2s.filter((s) => s[i] !== (m ? "1" : "0"));
+    co2s = co2s.filter(s => s[i] !== (m ? "1" : "0"));
   }
 
   const [oxygenStr] = oxygens;
@@ -70,7 +72,7 @@ console.time("Part 2");
     co2Str,
     oxygen,
     co2,
-    answer: oxygen * co2,
+    answer: oxygen * co2
   });
 })();
 console.timeEnd("Part 2");

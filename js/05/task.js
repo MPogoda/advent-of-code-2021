@@ -2,11 +2,13 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 
-const data = rawData.map((line) => {
-  [_, x1, y1, x2, y2] = /^(\d+),(\d+) -> (\d+),(\d+)$/.exec(line);
+const data = rawData.map(line => {
+  const [, x1, y1, x2, y2] = /^(\d+),(\d+) -> (\d+),(\d+)$/.exec(line);
   return { x1: Number(x1), y1: Number(y1), x2: Number(x2), y2: Number(y2) };
 });
 console.timeEnd("parser");
@@ -27,7 +29,7 @@ console.time("Part 1");
     }
   }
 
-  const answer = Array.from(field.values()).filter((x) => x > 1).length;
+  const answer = Array.from(field.values()).filter(x => x > 1).length;
   console.log(answer);
 })();
 console.timeEnd("Part 1");
@@ -76,7 +78,7 @@ console.time("Part 2");
     }
   }
 
-  const answer = Array.from(field.values()).filter((x) => x > 1).length;
+  const answer = Array.from(field.values()).filter(x => x > 1).length;
   console.log(answer);
 })();
 console.timeEnd("Part 2");

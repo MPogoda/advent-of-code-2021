@@ -2,7 +2,9 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 const pos = {};
 let min = Infinity;

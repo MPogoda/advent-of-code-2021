@@ -29,9 +29,9 @@ console.time("Part 1");
   const roll = createDie();
 
   function move(pos) {
-    return (newPos = [1, 2, 3]
+    return [1, 2, 3]
       .map(() => roll())
-      .reduce((p, v) => 1 + ((p - 1 + v) % 10), pos));
+      .reduce((p, v) => 1 + ((p - 1 + v) % 10), pos);
   }
 
   const players = [

@@ -2,9 +2,11 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
-const data = rawData.map((row) => row.split("").map(Number));
+const data = rawData.map(row => row.split("").map(Number));
 console.timeEnd("parser");
 
 function neighbours(i, j) {
@@ -29,7 +31,7 @@ console.time("Part 1");
   for (let i = 0; i < data.length; ++i) {
     for (let j = 0; j < data[0].length; ++j) {
       const ns = neighbours(i, j);
-      if (ns.every((n) => n > data[i][j])) {
+      if (ns.every(n => n > data[i][j])) {
         ans += data[i][j] + 1;
       }
     }

@@ -2,9 +2,11 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
-const data = rawData.map((line) => line.split("").map(Number));
+const data = rawData.map(line => line.split("").map(Number));
 console.timeEnd("parser");
 console.time("Part 1");
 (() => {
@@ -31,13 +33,13 @@ console.timeEnd("Part 1");
 
 console.time("Part 2");
 (() => {
-  const shortestPath = (ds) => {
+  const shortestPath = ds => {
     const N = ds.length;
     const adjacent = [
       [1, 0],
       [0, 1],
       [-1, 0],
-      [0, -1],
+      [0, -1]
     ];
     const queue = [{ x: 0, y: 0, cost: 0 }];
     const visited = new Set();

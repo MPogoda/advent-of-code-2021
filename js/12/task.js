@@ -2,7 +2,9 @@ console.time("parser");
 const filename = "input";
 // const filename = "testinput1";
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 
 const map = {};
@@ -63,7 +65,7 @@ console.time("Part 2");
       stack.push({
         path: currentPath,
         node: connection,
-        visitedTwice: visited || visitedTwice,
+        visitedTwice: visited || visitedTwice
       });
     }
   }

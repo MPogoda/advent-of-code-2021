@@ -3,7 +3,9 @@ const filename = "input";
 // const filename = "testinput";
 const PERIOD = 7;
 
-const rawData = require("fs").readFileSync(filename, "UTF-8").split("\n");
+const rawData = require("fs")
+  .readFileSync(filename, "UTF-8")
+  .split("\n");
 rawData.pop();
 
 const data = rawData[0].split(",");
