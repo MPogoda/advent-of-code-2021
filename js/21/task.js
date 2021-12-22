@@ -78,7 +78,6 @@ console.time("Part 2");
         const [pos, score] = rawK.split(":").map(Number);
         for (const [moves, count] of MOVES_COUNT) {
           const newPos = 1 + ((pos + moves - 1) % 10);
-          // const newPos = POSITION_NUM_MOVES_MAP[[pos, moves].join(":")];
           const newScore = score + newPos;
           const numGames = v * count;
           if (newScore >= WINNING) {
