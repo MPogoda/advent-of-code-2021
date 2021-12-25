@@ -1,5 +1,3 @@
-const { nextTick } = require("process");
-
 console.time("parser");
 const filename = "input";
 // const filename = "testinput";
